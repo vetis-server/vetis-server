@@ -32,3 +32,26 @@ vetis = { path = "../vetis/vetis", default-features = false }
 #vetis = { version = "0.1.7-beta.3", default-features = false }
 vetis-tokio = { path = "../vetis-tokio" }
 #vetis-tokio = { version = "0.1.2-beta.2" }
+
+[dev-dependencies]
+caramelo = "0.1.5"
+#deboa = { path = "../deboa/deboa" }
+deboa = { version = "0.1.5-beta.2" }
+# deboa-tokio = { path = "../deboa-tokio/deboa-tokio", default-features = false, features = [
+#   "http2",
+#   #"http3",
+#   "rust-tls",
+#   "default-rustls-provider",
+#   "default-rustls-verifier",
+# ] }
+deboa-tokio = { version = "0.1.4-beta.3", default-features = false, features = [
+  "http2",
+  #"http3",
+  "rust-tls",
+  "default-rustls-provider",
+  "default-rustls-verifier",
+] }
+tokio = { version = "1.52.3", default-features = false, features = [
+  "macros",
+  "rt-multi-thread",
+] }
