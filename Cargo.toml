@@ -1,0 +1,34 @@
+[package]
+name = "vetis-server"
+version = "0.1.0"
+authors = ["Rogerio Araújo <rogerio.araujo@gmail.com>"]
+edition = "2021"
+repository = "https://github.com/vetis-server/vetis-tokio"
+homepage = "https://github.com/vetis-server/vetis"
+description = "Very Tiny Server"
+readme = "README.md"
+license = "MIT OR Apache-2.0"
+keywords = ["http", "networking", "tokio", "rest-server"]
+publish = true
+rust-version = "1.85.0"
+
+[dependencies]
+clap = { version = "4.6.7", default-features = false, features = [
+  "std",
+  "derive",
+] }
+env_logger = "0.11.9"
+log = "0.4.34"
+serde = "1.0.228"
+serde_yaml_ng = "0.10.0"
+tokio = { version = "1.52.3", features = [
+  "fs",
+  "signal",
+  "net",
+  "macros",
+  "rt-multi-thread",
+], default-features = false }
+vetis = { path = "../vetis/vetis", default-features = false }
+#vetis = { version = "0.1.7-beta.3", default-features = false }
+vetis-tokio = { path = "../vetis-tokio" }
+#vetis-tokio = { version = "0.1.2-beta.2" }

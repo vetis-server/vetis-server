@@ -1,0 +1,6 @@
+debug
+target
+*.pdb
+/target
+.DS_Store
+.samoyed
