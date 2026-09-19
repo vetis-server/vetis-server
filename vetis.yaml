@@ -1,0 +1,45 @@
+worker_threads: 24
+max_blocking_threads: 120
+
+server:
+  enable_logging: true
+  listeners:
+    - interface: "0.0.0.0"
+      port: 8443
+      protos:
+        - "HTTP/2.0"
+      alpn_protos:
+        - "H2"
+      allow_unsafe_conn: false
+  hosts:
+    - hostname: "localhost"
+      root_directory: "sites/default"
+      enable_hsts: false
+      bind_addresses:
+        - ["0.0.0.0", 8443]
+      security:
+        ca_file: "certs/ca.der"
+        cert_file: "certs/server.der"
+        key_file: "certs/server.key.der"
+      error_pages:
+        404: "404.html"
+      paths:
+        - type: "static_path"
+          uri: "/"
+          directory: "html"
+          extensions: "\\.(html)$"
+          cache:
+            max_file_size: 10485760
+            ttl: "5m"
+            tti: "2m"
+            capacity: 1000
+          index_files:
+            - "index.html"
+        - type: "flash_path"
+          uri: "/vetis"
+          response: "Hello from VeTiS!"
+          status_code: 200
+        - type: "flash_path"
+          uri: "/vetis/rio"
+          response: "Fala galera!"
+          status_code: 200

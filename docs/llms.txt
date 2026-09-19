@@ -1,6 +1,18 @@
-# VeTiS (Very Tiny Server)
+# VeTiS
 
-## Install
+This project started inside VeTiS, the reference API nowadays. Then it moved to vetis-tokio
+and related runtime crates, but now, for better packaging it has his own repository.
+
+## Features
+
+- **Minimalist Design**: Focus on what matters - serving HTTP requests efficiently
+- **Protocol Support**: Full HTTP/1, HTTP/2, and HTTP/3 implementation
+- **Secure by Default**: Built-in TLS support with modern cryptography
+- **Zero-Cost Abstractions**: Leverage Rust's performance without overhead
+- **Language Support**: Support for Python (WSGI/ASGI), PHP (SAPI), and RSGI applications
+- **Feature-Gated**: Include only what you need for optimal binary size
+
+## Installation
 
 ### Cargo
 
@@ -59,25 +71,6 @@ server:
           status_code: 200
 ```
 
-Then you can run with:
+## Blog Posts
 
-```bash
-vetis-server --f vetis.yaml
-```
-
-Please note this sample configuration is also available at repository root.
-
-## License
-
-Licensed under either of
-
-- Apache License, Version 2.0
-  (LICENSE-APACHE or <https://www.apache.org/licenses/LICENSE-2.0>)
-- MIT license
-  (LICENSE-MIT or <https://opensource.org/licenses/MIT>)
-
-at your option.
-
-## Author
-
-Rogerio Pereira Araujo <rogerio.araujo@gmail.com>
+- Coming soon

@@ -2,15 +2,24 @@
 name = "vetis-server"
 version = "0.1.0"
 authors = ["Rogerio Araújo <rogerio.araujo@gmail.com>"]
-edition = "2021"
+edition = "2024"
 repository = "https://github.com/vetis-server/vetis-tokio"
 homepage = "https://github.com/vetis-server/vetis"
 description = "Very Tiny Server"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
-keywords = ["http", "networking", "tokio", "rest-server"]
+keywords = ["http", "networking", "tokio", "web-server"]
 publish = true
 rust-version = "1.85.0"
+
+[features]
+default = ["toml-config", "static", "flash"]
+yaml-config = ["dep:serde_yaml_ng"]
+toml-config = ["dep:toml"]
+static = ["dep:vetis-static"]
+flash = ["dep:vetis-flash"]
+proxy = ["dep:vetis-proxy"]
+rev-proxy = ["dep:vetis-rev-proxy"]
 
 [dependencies]
 clap = { version = "4.6.7", default-features = false, features = [
@@ -19,8 +28,10 @@ clap = { version = "4.6.7", default-features = false, features = [
 ] }
 env_logger = "0.11.9"
 log = "0.4.34"
+mimalloc = "0.1.52"
 serde = "1.0.228"
-serde_yaml_ng = "0.10.0"
+serde_yaml_ng = { version = "0.10.0", optional = true }
+toml = {version = "1.1.6", optional = true }
 tokio = { version = "1.52.3", features = [
   "fs",
   "signal",
@@ -28,10 +39,25 @@ tokio = { version = "1.52.3", features = [
   "macros",
   "rt-multi-thread",
 ], default-features = false }
-vetis = { path = "../vetis/vetis", default-features = false }
+
+# Vetis modules
+vetis = { path = "../vetis/vetis" }
 #vetis = { version = "0.1.7-beta.3", default-features = false }
-vetis-tokio = { path = "../vetis-tokio" }
+vetis-tokio = { path = "../vetis-tokio", features = ["http2", "http3"] }
 #vetis-tokio = { version = "0.1.2-beta.2" }
+vetis-flash = { path = "../vetis-extras/vetis-flash", optional = true, features = [
+  "runtime-tokio",
+] }
+vetis-proxy = { path = "../vetis-extras/vetis-proxy", optional = true, features = [
+  "runtime-tokio",
+] }
+vetis-rev-proxy = { path = "../vetis-extras/vetis-rev-proxy", optional = true, features = [
+  "runtime-tokio",
+] }
+vetis-static = { path = "../vetis-extras/vetis-static", optional = true, features = [
+  "runtime-tokio",
+] }
+time = { version = "0.3.45", features = ["macros", "formatting"] }
 
 [dev-dependencies]
 caramelo = "0.1.5"
@@ -55,3 +81,15 @@ tokio = { version = "1.52.3", default-features = false, features = [
   "macros",
   "rt-multi-thread",
 ] }
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"

@@ -1,14 +1,25 @@
-# VeTiS (Very Tiny Server)
+---
+layout: default
+title: VeTiS - Very Tiny Server
+nav_order: 1
+description: "A blazingly fast, minimalist HTTP server built for modern Rust applications"
+permalink: /
+---
+<div align="center">
+<h1><b>VeTiS</b></h1>
+</div>
 
-## Install
+This project started inside VeTiS, the reference API nowadays. Then it moved to vetis-tokio
+and related runtime crates, but now, for better packaging it has his own repository.
 
-### Cargo
+## Features
 
-You can install it with `cargo install` or `cargo bininstall`:
-
-```bash
-cargo install vetis-server
-```
+- **Minimalist Design**: Focus on what matters - serving HTTP requests efficiently
+- **Protocol Support**: Full HTTP/1, HTTP/2, and HTTP/3 implementation
+- **Secure by Default**: Built-in TLS support with modern cryptography
+- **Zero-Cost Abstractions**: Leverage Rust's performance without overhead
+- **Language Support**: Built-in support for Python, PHP, and RSGI applications
+- **Feature-Gated**: Include only what you need for optimal binary size
 
 ## Quickstart
 
@@ -59,13 +70,18 @@ server:
           status_code: 200
 ```
 
-Then you can run with:
+## Documentation
 
-```bash
-vetis-server --f vetis.yaml
-```
+- [Contributing Guide](./CONTRIBUTING.md)
+- [Language Support](./LANGUAGE_SUPPORT.md)
 
-Please note this sample configuration is also available at repository root.
+## Other Projects
+
+- [caramelo](https://crates.io/crates/caramelo) - Assertion based test framrwork
+- [deboa](https://crates.io/crates/deboa) - HTTP client
+- [easyhttpmock](https://crates.io/crates/easyhttpmock) - HTTP mock server
+- [sofie](https://crates.io/crates/sofie) - Fullstack web framework
+- [uget](https://crates.io/crates/uget) - CLI HTTP client
 
 ## License
 
