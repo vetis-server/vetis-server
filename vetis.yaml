@@ -1,33 +1,36 @@
-worker_threads: 24
-max_blocking_threads: 120
+worker_threads: 12
+max_blocking_threads: 6
 
 server:
-  enable_logging: true
-  listeners:
-    - interface: "0.0.0.0"
-      port: 8443
-      protos:
-        - "HTTP/2.0"
-      alpn_protos:
-        - "H2"
-      allow_unsafe_conn: false
+  workers: 1
+  log:
+    dest: "stdout"
+    log_level: $(VETIS_LOG_LEVEL:"INFO")
   hosts:
     - hostname: "localhost"
       root_directory: "sites/default"
       enable_hsts: false
+      allow_unsafe_conn: false
       bind_addresses:
         - ["0.0.0.0", 8443]
-      security:
+      protos:
+        - "HTTP/2.0"
+      log:
+        dest: "stdout"
+        log_level: "INFO"
+      tls:
         ca_file: "certs/ca.der"
         cert_file: "certs/server.der"
         key_file: "certs/server.key.der"
-      error_pages:
+        #supported_alpns:
+        #  - "h2"
+      status_pages:
         404: "404.html"
       paths:
         - type: "static_path"
           uri: "/"
           directory: "html"
-          extensions: "\\.(html)$"
+          extensions: "\\.(html|ico|css)$"
           cache:
             max_file_size: 10485760
             ttl: "5m"

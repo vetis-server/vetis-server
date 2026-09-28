@@ -1,35 +1,35 @@
-worker_threads = 24
-max_blocking_threads = 120
+worker_threads = 12
+max_blocking_threads = 256
 
 [server]
-enable_logging = true
+workers = 1
 
-[[server.listeners]]
-interface = "0.0.0.0"
-port = 8443
-protos = ["HTTP/2.0"]
-alpn_protos = ["H2"]
-allow_unsafe_conn = false
+[[server.log]]
+dest = "stdout"
+log_level = "INFO"
 
 [[server.hosts]]
-hostname = "localhost"
+hostname = "bgqew-168-197-115-224.run.pinggy-free.link"
 root_directory = "sites/default"
 enable_hsts = false
-bind_addresses = [["0.0.0.0", 8443]]
+bind_addresses = [["127.0.0.1", 8443]]
+protos = ["HTTP/1.1"]
+allow_unsafe_conn = true
 
-[server.hosts.security]
+[server.hosts.tls]
 ca_file = "certs/ca.der"
 cert_file = "certs/server.der"
 key_file = "certs/server.key.der"
+#supported_alpns = ["HTTP11"]
 
-[server.hosts.error_pages]
-404 = "404.html"
+[server.hosts.status_pages]
+404 = "html/404.html"
 
 [[server.hosts.paths]]
 type = "static_path"
 uri = "/"
 directory = "html"
-extensions = "\\.(html)$"
+extensions = "\\.(html|ico|css)$"
 index_files = ["index.html"]
 
 [server.hosts.paths.cache]
