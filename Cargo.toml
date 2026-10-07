@@ -13,51 +13,92 @@ publish = true
 rust-version = "1.85.0"
 
 [features]
-default = ["toml-config", "static", "flash"]
+default = ["yaml-config", "logging", "static", "flash"]
+
+# Config files support
 yaml-config = ["dep:serde_yaml_ng"]
 toml-config = ["dep:toml"]
-static = ["dep:vetis-static"]
+
+logging = ["dep:vetis-log", "dep:logforth"]
+metrics = ["dep:vetis-otel"]
+
+# Script support
+rhai-script = ["dep:vetis-rhai"]
+
+# Misc modules
 flash = ["dep:vetis-flash"]
 proxy = ["dep:vetis-proxy"]
 rev-proxy = ["dep:vetis-rev-proxy"]
+static = ["dep:vetis-static"]
 
 [dependencies]
 clap = { version = "4.6.7", default-features = false, features = [
   "std",
   "derive",
 ] }
-env_logger = "0.11.9"
 log = "0.4.34"
+logforth = { version = "0.30.1", optional = true, features = ["starter-log"] }
 mimalloc = "0.1.52"
+regex = "1.13.1"
 serde = "1.0.228"
 serde_yaml_ng = { version = "0.10.0", optional = true }
+sysinfo = { version = "0.39.6", optional = true }
 toml = {version = "1.1.6", optional = true }
-tokio = { version = "1.52.3", features = [
+tokio = { version = "1.53.1", features = [
   "fs",
   "signal",
   "net",
   "macros",
   "rt-multi-thread",
+  "windows-sys"
 ], default-features = false }
 
-# Vetis modules
 vetis = { path = "../vetis/vetis" }
-#vetis = { version = "0.1.7-beta.3", default-features = false }
+#vetis = { version = "0.1.7-beta.4", default-features = false }
+
 vetis-tokio = { path = "../vetis-tokio", features = ["http2", "http3"] }
-#vetis-tokio = { version = "0.1.2-beta.2" }
+#vetis-tokio = { version = "0.1.2-beta.5" }
+
 vetis-flash = { path = "../vetis-extras/vetis-flash", optional = true, features = [
   "runtime-tokio",
 ] }
+# vetis-flash = { path = "../vetis-extras/vetis-flash", optional = true, features = [
+#   "runtime-tokio",
+# ] }
+
+vetis-log = { path = "../vetis-extras/vetis-log", optional = true }
+#vetis-log = { path = "../vetis-extras/vetis-log", optional = true }
+
+vetis-otel = { path = "../vetis-extras/vetis-otel", optional = true }
+#vetis-otel = { path = "../vetis-extras/vetis-otel", optional = true }
+
 vetis-proxy = { path = "../vetis-extras/vetis-proxy", optional = true, features = [
   "runtime-tokio",
 ] }
+# vetis-proxy = { path = "../vetis-extras/vetis-proxy", optional = true, features = [
+#   "runtime-tokio",
+# ] }
+
+vetis-rhai = { path = "../vetis-extras/vetis-rhai", optional = true, features = [
+  "runtime-tokio",
+] }
+# vetis-rhai = { path = "../vetis-extras/vetis-rhai", optional = true, features = [
+#   "runtime-tokio",
+# ] }
+
 vetis-rev-proxy = { path = "../vetis-extras/vetis-rev-proxy", optional = true, features = [
   "runtime-tokio",
 ] }
+# vetis-rev-proxy = { path = "../vetis-extras/vetis-rev-proxy", optional = true, features = [
+#   "runtime-tokio",
+# ] }
+
 vetis-static = { path = "../vetis-extras/vetis-static", optional = true, features = [
   "runtime-tokio",
 ] }
-time = { version = "0.3.45", features = ["macros", "formatting"] }
+# vetis-static = { path = "../vetis-extras/vetis-static", optional = true, features = [
+#   "runtime-tokio",
+# ] }
 
 [dev-dependencies]
 caramelo = "0.1.5"

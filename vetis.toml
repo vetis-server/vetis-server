@@ -26,7 +26,7 @@ key_file = "certs/server.key.der"
 404 = "html/404.html"
 
 [[server.hosts.paths]]
-type = "static_path"
+type = "static"
 uri = "/"
 directory = "html"
 extensions = "\\.(html|ico|css)$"
@@ -39,13 +39,13 @@ tti = "2m"
 capacity = 1000
 
 [[server.hosts.paths]]
-type = "flash_path"
+type = "flash"
 uri = "/vetis"
 response = "Hello from VeTiS!"
 status_code = 200
 
 [[server.hosts.paths]]
-type = "flash_path"
+type = "flash"
 uri = "/vetis/rio"
 response = "Fala galera!"
 status_code = 200

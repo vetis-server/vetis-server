@@ -30,23 +30,20 @@ worker_threads: 24
 max_blocking_threads: 120
 
 server:
-  enable_logging: true
-  listeners:
-    - interface: "0.0.0.0"
-      port: 443
-      protos:
-        - "HTTP/1.1"
-        - "HTTP/2.0"
-      alpn_protos:
-        - "h2"
-        - "http/1.1"
-      allow_unsafe_conn: false
+  workers: 1
+  log:
+    dest: "stdout"
+    log_level: $(VETIS_LOG_LEVEL:"INFO")
   hosts:
     - hostname: "localhost"
       root_directory: "sites/default"
       enable_hsts: false
+      allow_unsafe_conn: false
       bind_addresses:
         - ["0.0.0.0", 8443]
+      protos:
+        - "HTTP/1.1"
+        - "HTTP/2.0"
       security:
         ca_cert_from_file: "certs/ca.der"
         cert_from_file: "certs/server.der"

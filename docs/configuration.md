@@ -55,7 +55,7 @@ hosts:
     error_pages:
       404: "404.html"
     paths:
-      - type: "static-path"
+      - type: "static"
         uri: "/"
         directory: "html"
         extensions: "\\.(html)$"
@@ -96,7 +96,7 @@ error_pages:
 Defines URL patterns for serving static files:
 
 ```yaml
-  - type: "static-path"
+  - type: "static"
     uri: "/"
     directory: "/home/rogerio/Documentos/Temp/vetis/static"
     extensions: "\\.(html)$"
@@ -138,7 +138,7 @@ hosts:
     port: 3000
     root_directory: "./public"
     paths:
-      - type: "static-path"
+      - type: "static"
         uri: "/"
         directory: "./public"
         extensions: ".*"
@@ -164,7 +164,7 @@ hosts:
       404: "errors/404.html"
       500: "errors/500.html"
     paths:
-      - type: "static-path"
+      - type: "static"
         uri: "/"
         directory: "/var/www/example.com/public"
         extensions: "\\.(html|css|js|png|jpg|gif|svg)$"
