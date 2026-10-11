@@ -52,100 +52,36 @@ tokio = { version = "1.53.1", features = [
   "rt-multi-thread",
   "windows-sys",
 ], default-features = false }
-
-#vetis = { version = "0.1.7-beta.4", default-features = false }
-# vetis-flash = { version = "", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-# vetis-log = { version = "", optional = true }
-# vetis-otel = { version = "", optional = true }
-# vetis-proxy = { version = "", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-# vetis-rhai = { version = "", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-# vetis-rev-proxy = { version = "", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-# vetis-static = { version = "", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-#vetis-tokio = { version = "0.1.2-beta.5" }
-
-#vetis = { path = "../vetis/vetis" }
-# vetis-flash = { path = "../vetis-extras/vetis-flash", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-# vetis-log = { path = "../vetis-extras/vetis-log", optional = true }
-# vetis-otel = { path = "../vetis-extras/vetis-otel", optional = true }
-# vetis-proxy = { path = "../vetis-extras/vetis-proxy", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-# vetis-rhai = { path = "../vetis-extras/vetis-rhai", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-# vetis-rev-proxy = { path = "../vetis-extras/vetis-rev-proxy", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-# vetis-static = { path = "../vetis-extras/vetis-static", optional = true, features = [
-#   "runtime-tokio",
-# ] }
-#vetis-tokio = { path = "../vetis-tokio", features = ["http2", "http3"] }
-
-vetis = { git = "https://github.com/vetis-server/vetis.git" }
-vetis-flash = { git = "https://github.com/vetis-server/vetis-contrib.git", optional = true, features = [
+vetis = { version = "0.1.7-beta.5", default-features = false }
+vetis-flash = { version = "0.1.1-beta.1", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-log = { git = "https://github.com/vetis-server/vetis-contrib.git", optional = true }
-vetis-otel = { git = "https://github.com/vetis-server/vetis-contrib.git", optional = true }
-vetis-proxy = { git = "https://github.com/vetis-server/vetis-contrib.git", optional = true, features = [
+vetis-log = { version = "0.1.0-beta.1", optional = true }
+vetis-otel = { version = "0.1.0-beta.1", optional = true }
+vetis-proxy = { version = "0.1.1", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-rhai = { git = "https://github.com/vetis-server/vetis-contrib.git", optional = true, features = [
+vetis-rhai = { version = "0.1.0", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-rev-proxy = { git = "https://github.com/vetis-server/vetis-contrib.git", optional = true, features = [
+vetis-rev-proxy = { version = "0.1.0", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-static = { git = "https://github.com/vetis-server/vetis-contrib.git", optional = true, features = [
+vetis-static = { version = "0.1.1-beta.2", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-tokio = { git = "https://github.com/vetis-server/vetis-tokio.git", features = [
-  "http2",
-  "http3",
-] }
+vetis-tokio = { version = "0.1.2-beta.5" }
 
 [dev-dependencies]
 caramelo = "0.1.5"
-
-#deboa = { version = "0.1.5-beta.2" }
-# deboa-tokio = { version = "0.1.4-beta.3", default-features = false, features = [
-#   "http2",
-#   #"http3",
-#   "rust-tls",
-#   "default-rustls-provider",
-#   "default-rustls-verifier",
-# ] }
-
-#deboa = { path = "../deboa/deboa" }
-# deboa-tokio = { path = "../deboa-tokio/deboa-tokio", default-features = false, features = [
-#   "http2",
-#   #"http3",
-#   "rust-tls",
-#   "default-rustls-provider",
-#   "default-rustls-verifier",
-# ] }
-
-deboa = { git = "https://github.com/deboa-client/deboa.git" }
-deboa-tokio = { git = "https://github.com/deboa-client/deboa-tokio.git", default-features = false, features = [
+deboa = { version = "0.1.5-beta.3" }
+deboa-tokio = { version = "0.1.4-beta.3", default-features = false, features = [
   "http2",
   #"http3",
   "rust-tls",
   "default-rustls-provider",
   "default-rustls-verifier",
 ] }
-
 tokio = { version = "1.52.3", default-features = false, features = [
   "macros",
   "rt-multi-thread",
