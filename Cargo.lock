@@ -3258,7 +3258,7 @@ dependencies = [
 
 [[package]]
 name = "vetis-server"
-version = "0.1.0-beta.1"
+version = "0.1.0-beta.2"
 dependencies = [
  "caramelo",
  "clap",
