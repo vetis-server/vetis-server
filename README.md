@@ -1,13 +1,37 @@
 # VeTiS (Very Tiny Server)
 
-## Install
+## Installation
 
-### Cargo
+<a href="https://repology.org/project/vetis/versions"><img align="right" src="https://repology.org/badge/vertical-allrepos/vetis.svg" alt="Packaging status"></a>
 
-You can install it with `cargo install` or `cargo bininstall`:
+`vetis-server` can be installed with `cargo binstall`:
 
 ```bash
-cargo install vetis-server
+cargo binstall vetis-server
+```
+
+### Alpine Linux
+
+```bash
+# apk add vetis
+```
+
+### Arch Linux
+
+```bash
+# pacman -S vetis
+```
+
+### MacOS
+
+```bash
+brew install vetis
+```
+
+### OpenBSD
+
+```bash
+# pkg_add vetis
 ```
 
 ## Quickstart

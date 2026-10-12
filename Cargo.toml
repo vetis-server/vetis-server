@@ -12,6 +12,12 @@ keywords = ["http", "networking", "tokio", "web-server"]
 publish = true
 rust-version = "1.85.0"
 
+[package.metadata.wix]
+upgrade-guid = "CC7ED56C-7541-44AC-A5CB-4AD7CEFF7796"
+path-guid = "B9DD4049-AB78-4A22-9F1B-1567DB281490"
+license = false
+eula = false
+
 [features]
 default = ["yaml-config", "logging", "static", "flash"]
 
@@ -53,24 +59,24 @@ tokio = { version = "1.53.1", features = [
   "windows-sys",
 ], default-features = false }
 vetis = { version = "0.1.7-beta.5", default-features = false }
-vetis-flash = { version = "0.1.1-beta.1", optional = true, features = [
+vetis-flash = { version = "0.1.0-beta.1", optional = true, features = [
   "runtime-tokio",
 ] }
 vetis-log = { version = "0.1.0-beta.1", optional = true }
 vetis-otel = { version = "0.1.0-beta.1", optional = true }
-vetis-proxy = { version = "0.1.1", optional = true, features = [
+vetis-proxy = { version = "0.1.2-beta.1", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-rhai = { version = "0.1.0", optional = true, features = [
+vetis-rhai = { version = "0.1.0-beta.1", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-rev-proxy = { version = "0.1.0", optional = true, features = [
+vetis-rev-proxy = { version = "0.1.0-beta.1", optional = true, features = [
   "runtime-tokio",
 ] }
 vetis-static = { version = "0.1.1-beta.2", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-tokio = { version = "0.1.2-beta.5" }
+vetis-tokio = { version = "0.1.2-beta.6" }
 
 [dev-dependencies]
 caramelo = "0.1.5"
@@ -82,7 +88,7 @@ deboa-tokio = { version = "0.1.4-beta.3", default-features = false, features = [
   "default-rustls-provider",
   "default-rustls-verifier",
 ] }
-tokio = { version = "1.52.3", default-features = false, features = [
+tokio = { version = "1.53.2", default-features = false, features = [
   "macros",
   "rt-multi-thread",
 ] }
