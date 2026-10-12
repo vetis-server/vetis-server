@@ -3,7 +3,7 @@ name = "vetis-server"
 version = "0.1.0-beta.1"
 authors = ["Rogerio Araújo <rogerio.araujo@gmail.com>"]
 edition = "2024"
-repository = "https://github.com/vetis-server/vetis-tokio"
+repository = "https://github.com/vetis-server/vetis-server"
 homepage = "https://github.com/vetis-server/vetis"
 description = "Very Tiny Server"
 readme = "README.md"
@@ -19,7 +19,7 @@ license = false
 eula = false
 
 [features]
-default = ["yaml-config", "logging", "static", "flash"]
+default = ["yaml-config", "logging", "flash", "static"]
 
 # Config files support
 yaml-config = ["dep:serde_yaml_ng"]
@@ -67,13 +67,13 @@ vetis-otel = { version = "0.1.0-beta.1", optional = true }
 vetis-proxy = { version = "0.1.2-beta.1", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-rhai = { version = "0.1.0-beta.1", optional = true, features = [
+vetis-rhai = { version = "0.1.1-beta.1", optional = true, features = [
   "runtime-tokio",
 ] }
 vetis-rev-proxy = { version = "0.1.0-beta.1", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-static = { version = "0.1.1-beta.2", optional = true, features = [
+vetis-static = { version = "0.1.1-beta.3", optional = true, features = [
   "runtime-tokio",
 ] }
 vetis-tokio = { version = "0.1.2-beta.6" }
