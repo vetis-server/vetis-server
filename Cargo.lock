@@ -3170,12 +3170,15 @@ dependencies = [
 
 [[package]]
 name = "vetis-log"
-version = "0.1.0-beta.1"
+version = "0.1.0-beta.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "741f82ad62b164b72398ab1e138a75bbd3ae5bf704d51149903d7191f8a2b8f2"
+checksum = "da00f6c03d3dd52bea738d4d0d11c629e89830479f3ded9d8c395831e345b72e"
 dependencies = [
+ "colored",
+ "jiff",
  "log",
  "logforth",
+ "logforth-core",
  "serde",
  "typetag",
  "vetis",
