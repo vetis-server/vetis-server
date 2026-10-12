@@ -13,25 +13,25 @@ cargo binstall vetis-server
 ### Alpine Linux
 
 ```bash
-# apk add vetis
+# apk add vetis-server
 ```
 
 ### Arch Linux
 
 ```bash
-# pacman -S vetis
+# pacman -S vetis-server
 ```
 
 ### MacOS
 
 ```bash
-brew install vetis
+brew install vetis-server
 ```
 
 ### OpenBSD
 
 ```bash
-# pkg_add vetis
+# pkg_add vetis-server
 ```
 
 ## Quickstart
