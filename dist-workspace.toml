@@ -20,7 +20,7 @@ targets = [
     "x86_64-pc-windows-msvc",
 ]
 # A GitHub repo to push Homebrew formulas to
-tap = "vetis-server/vetis-templates"
+tap = "ararog/homebrew-tap"
 # Path that installers should place binaries in
 install-path = "CARGO_HOME"
 # Publish jobs to run in CI
