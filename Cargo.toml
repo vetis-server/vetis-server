@@ -75,12 +75,12 @@ vetis-rev-proxy = { version = "0.1.0-beta.1", optional = true, features = [
 vetis-static = { version = "0.1.1-beta.3", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-tokio = { version = "0.1.2-beta.6" }
+vetis-tokio = { version = "0.1.2-beta.8" }
 
 [dev-dependencies]
 caramelo = "0.1.5"
-deboa = { version = "0.1.5-beta.3" }
-deboa-tokio = { version = "0.1.4-beta.3", default-features = false, features = [
+deboa = { version = "0.1.5-beta.5" }
+deboa-tokio = { version = "0.1.4-beta.6", default-features = false, features = [
   "http2",
   #"http3",
   "rust-tls",
