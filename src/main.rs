@@ -178,7 +178,7 @@ fn parse_file(file_contents: &str) -> Result<VetisConfig, Box<dyn std::error::Er
     });
 
     #[cfg(feature = "yaml-config")]
-    let config = serde_yaml_ng::from_str::<VetisConfig>(&file_contents)?;
+    let config = serde_saphyr::from_str::<VetisConfig>(&file_contents)?;
     #[cfg(feature = "toml-config")]
     let config = toml::from_str::<VetisConfig>(&file_contents)?;
     Ok(config)
