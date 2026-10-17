@@ -1,5 +1,7 @@
 # VeTiS (Very Tiny Server)
 
+[![Crates.io downloads](https://img.shields.io/crates/d/vetis-server)](https://crates.io/crates/vetis-server) [![crates.io](https://img.shields.io/crates/v/vetis-server?style=flat-square)](https://crates.io/crates/vetis-server) [![Build Status](https://github.com/vetis-server/vetis-server/actions/workflows/rust.yml/badge.svg?event=push)](https://github.com/vetis-server/vetis-server/actions/workflows/rust.yml) ![Crates.io MSRV](https://img.shields.io/crates/msrv/vetis-server) [![Documentation](https://docs.rs/vetis-server/badge.svg)](https://docs.rs/vetis-server/latest/vetis-server) [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/vetis-server/vetis-server/blob/main/LICENSE.md)  [![codecov](https://codecov.io/gh/vetis-server/vetis-server/graph/badge.svg?token=T0HSBAPVSI)](https://codecov.io/gh/vetis-server/vetis-server)
+
 ## Installation
 
 <a href="https://repology.org/project/vetis/versions"><img align="right" src="https://repology.org/badge/vertical-allrepos/vetis.svg" alt="Packaging status"></a>
