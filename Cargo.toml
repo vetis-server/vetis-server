@@ -78,6 +78,7 @@ vetis-static = { version = "0.1.1-beta.3", optional = true, features = [
 vetis-tokio = { version = "0.1.2-beta.8" }
 
 [dev-dependencies]
+assert_cmd = "2.2.2"
 caramelo = "0.1.5"
 deboa = { version = "0.1.5-beta.5" }
 deboa-tokio = { version = "0.1.4-beta.6", default-features = false, features = [
@@ -87,6 +88,7 @@ deboa-tokio = { version = "0.1.4-beta.6", default-features = false, features = [
   "default-rustls-provider",
   "default-rustls-verifier",
 ] }
+predicates = "3.1.4"
 tokio = { version = "1.53.2", default-features = false, features = [
   "macros",
   "rt-multi-thread",

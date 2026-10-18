@@ -111,7 +111,7 @@ jobs:
           target: ${{ matrix.platform.target }}
           toolchain: ${{ matrix.toolchain }}
           args:
-            "vetis-server --locked --release --features \"${{ matrix.protocols }} rust-tls deboa-tokio/${{ matrix.protocols }} deboa-tokio/rust-tls deboa-tokio/default-rustls-provider deboa-tokio/default-rustls-verifier\" --no-default-features"
+            "--locked --release --features \"${{ matrix.protocols }} rust-tls deboa-tokio/${{ matrix.protocols }} deboa-tokio/rust-tls deboa-tokio/default-rustls-provider deboa-tokio/default-rustls-verifier\" --no-default-features"
           strip: true
           cross-version: ${{ matrix.platform.cross-version || 'v0.2.5' }}
 
@@ -122,5 +122,5 @@ jobs:
           target: ${{ matrix.platform.target }}
           toolchain: ${{ matrix.toolchain }}
           args:
-            "vetis-server --locked --release --features \"${{ matrix.protocols }} rust-tls deboa-tokio/${{ matrix.protocols }} deboa-tokio/rust-tls deboa-tokio/default-rustls-provider deboa-tokio/default-rustls-verifier\" --no-default-features"
+            "--locked --release --features \"${{ matrix.protocols }} rust-tls deboa-tokio/${{ matrix.protocols }} deboa-tokio/rust-tls deboa-tokio/default-rustls-provider deboa-tokio/default-rustls-verifier\" --no-default-features"
         if: ${{ !matrix.platform.skip-tests }}
