@@ -39,7 +39,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        protocols: [http2, http3]
         platform:
           - os-name: FreeBSD-x86_64
             runs-on: ubuntu-24.04
@@ -104,23 +103,23 @@ jobs:
         run: sudo apt-get update --yes && sudo apt-get install --yes pkg-config openssl libssl-dev binutils
         if: matrix.platform.runs-on == 'ubuntu-24.04'
 
-      - name: Build ${{ matrix.platform.target }} binary for vetis-tokio and ${{ matrix.protocols }} with rust-tls features
+      - name: Build ${{ matrix.platform.target }} binary
         uses: houseabsolute/actions-rust-cross@v1
         with:
           command: "build"
           target: ${{ matrix.platform.target }}
           toolchain: ${{ matrix.toolchain }}
           args:
-            "--locked --release --features \"${{ matrix.protocols }} rust-tls deboa-tokio/${{ matrix.protocols }} deboa-tokio/rust-tls deboa-tokio/default-rustls-provider deboa-tokio/default-rustls-verifier\" --no-default-features"
+            "--locked --release"
           strip: true
           cross-version: ${{ matrix.platform.cross-version || 'v0.2.5' }}
 
-      - name: Run tests for ${{ matrix.platform.target }} with vetis-tokio and ${{ matrix.protocols }} and rust-tls features
+      - name: Run tests for ${{ matrix.platform.target }}
         uses: houseabsolute/actions-rust-cross@v1
         with:
           command: "test"
           target: ${{ matrix.platform.target }}
           toolchain: ${{ matrix.toolchain }}
           args:
-            "--locked --release --features \"${{ matrix.protocols }} rust-tls deboa-tokio/${{ matrix.protocols }} deboa-tokio/rust-tls deboa-tokio/default-rustls-provider deboa-tokio/default-rustls-verifier\" --no-default-features"
+            "--locked --release"
         if: ${{ !matrix.platform.skip-tests }}
