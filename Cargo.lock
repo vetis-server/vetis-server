@@ -2408,12 +2408,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
 
 [[package]]
-name = "ryu"
-version = "1.0.23"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9774ba4a74de5f7b1c1451ed6cd5285a32eddb5cccb8cc655a4e50009e06477f"
-
-[[package]]
 name = "schannel"
 version = "0.1.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2540,19 +2534,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4e7523beb55eece201a2356bee0bbca0d1ab466c14c07703b2e0ee6d42cb0c2c"
 dependencies = [
  "serde_core",
-]
-
-[[package]]
-name = "serde_yaml_ng"
-version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7b4db627b98b36d4203a7b458cf3573730f2bb591b28871d916dfa9efabfd41f"
-dependencies = [
- "indexmap",
- "itoa",
- "ryu",
- "serde",
- "unsafe-libyaml",
 ]
 
 [[package]]
@@ -3056,12 +3037,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4ac048d71ede7ee76d585517add45da530660ef4390e49b098733c6e897f254"
 
 [[package]]
-name = "unsafe-libyaml"
-version = "0.2.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "673aac59facbab8a9007c7f6108d11f63b603f7cabff99fabf650fea5c32b861"
-
-[[package]]
 name = "untrusted"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3126,16 +3101,13 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
 name = "vetis"
-version = "0.1.7-beta.5"
+version = "0.1.7-beta.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4c55a07284e41b03928fdb492a9397031cf20f0343eed7087fdf9ac8d899e1f"
+checksum = "3d0407c3e569e88a08a5136d54a5f7934d12b5034aab95395476a1d036856214"
 dependencies = [
  "arcstr",
- "bytes",
  "crossfire",
- "futures-util",
  "http",
- "http-body-util",
  "http-serde-ext",
  "hyper",
  "hyper-body-utils",
@@ -3143,14 +3115,10 @@ dependencies = [
  "logforth-core",
  "papaya",
  "patricia_tree",
- "rand 0.10.3",
  "serde",
- "serde_yaml_ng",
- "socket2",
  "thiserror",
  "time",
  "typetag",
- "url",
 ]
 
 [[package]]
