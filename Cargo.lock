@@ -3175,9 +3175,9 @@ dependencies = [
 
 [[package]]
 name = "vetis-log"
-version = "0.1.0-beta.2"
+version = "0.1.0-beta.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da00f6c03d3dd52bea738d4d0d11c629e89830479f3ded9d8c395831e345b72e"
+checksum = "f7deb1055726cb8a18399f05fbb618483556c9094697fed9d6fa4fb06dede6f0"
 dependencies = [
  "colored",
  "jiff",
