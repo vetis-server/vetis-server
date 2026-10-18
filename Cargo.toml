@@ -61,7 +61,7 @@ vetis = { version = "0.1.7-beta.5", default-features = false }
 vetis-flash = { version = "0.1.0-beta.1", optional = true, features = [
   "runtime-tokio",
 ] }
-vetis-log = { version = "0.1.0-beta.2", optional = true }
+vetis-log = { version = "0.1.0-beta.3", optional = true }
 vetis-otel = { version = "0.1.0-beta.1", optional = true }
 vetis-proxy = { version = "0.1.2-beta.1", optional = true, features = [
   "runtime-tokio",
