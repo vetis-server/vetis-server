@@ -1,8 +1,7 @@
 use clap::Parser;
 use log::{error, info};
-use regex::{Captures, regex};
 use serde::Deserialize;
-use std::{collections::HashMap, error::Error, fs::read_to_string, path::Path, time::Duration};
+use std::{error::Error, fs::read_to_string, path::Path, time::Duration};
 #[cfg(target_family = "unix")]
 use tokio::signal::unix::{SignalKind, signal};
 #[cfg(target_family = "windows")]
@@ -30,6 +29,8 @@ use vetis_rev_proxy::ReverseProxyPathConfig;
 #[allow(unused_imports)]
 use vetis_static::StaticPathConfig;
 
+use crate::config::parse_file;
+
 #[derive(Deserialize)]
 pub struct VetisConfig {
     worker_threads: usize,
@@ -37,6 +38,9 @@ pub struct VetisConfig {
     server: ServerConfig,
 }
 
+mod config;
+#[cfg(feature = "logging")]
+mod logs;
 #[cfg(feature = "metrics")]
 mod metrics;
 
@@ -135,87 +139,6 @@ async fn run(server_config: ServerConfig, deamon: Option<bool>) -> Result<(), Bo
     Ok(())
 }
 
-fn parse_file(file_contents: &str) -> Result<VetisConfig, Box<dyn std::error::Error>> {
-
-    let empty = String::default();
-
-    let mut resolved_files = HashMap::new();
-    let includes_regex = regex!(r"\$\(include_file\s*=\s*(.*)\)");
-    let mut matches = includes_regex.captures_iter(file_contents);
-    while let Some(matches) = matches.next(){
-        let (full, [file_path]) = matches.extract();
-        match read_to_string(file_path) {
-            Ok(file_contents) => {
-                resolved_files.insert(full, file_contents);
-            }
-            Err(e) => {
-                panic!("Could not include file: {}", e.to_string());
-            }
-        }
-    }
-    let file_contents = includes_regex.replace_all(file_contents, |caps: &Captures| {
-        resolved_files.get(&caps[0]).unwrap_or(&empty)
-    });
-
-    let mut resolved_vars = HashMap::new();
-    let env_vars = regex!("\\$\\(([a-zA-Z_]*):{0,1}([\\\"\\\']{0,1}.*[\\\"\\\']{0,1})\\)");
-    let mut matches = env_vars.captures_iter(&file_contents);
-    while let Some(matches) = matches.next(){
-        let (full, [name, default]) = matches.extract();
-        let value = match std::env::var_os(name) {
-            Some(var_value) => {
-                format!("{:?}", var_value)
-            }
-            None => {
-                default.to_string()
-            }
-        };
-        resolved_vars.insert(full, value);
-    }
-
-    let file_contents = env_vars.replace_all(&file_contents, |caps: &Captures| {
-        resolved_vars.get(&caps[0]).unwrap_or(&empty)
-    });
-
-    #[cfg(all(feature = "yaml-config", feature = "toml-config"))]
-    let config = match serde_saphyr::from_str::<VetisConfig>(&file_contents) {
-        Ok(config) => config,
-        Err(yaml_error) => toml::from_str::<VetisConfig>(&file_contents).map_err(|toml_error| {
-            std::io::Error::new(
-                std::io::ErrorKind::InvalidData,
-                format!("Could not parse config as YAML ({yaml_error}) or TOML ({toml_error})"),
-            )
-        })?,
-    };
-    #[cfg(all(feature = "yaml-config", not(feature = "toml-config")))]
-    let config = serde_saphyr::from_str::<VetisConfig>(&file_contents)?;
-    #[cfg(all(feature = "toml-config", not(feature = "yaml-config")))]
-    let config = toml::from_str::<VetisConfig>(&file_contents)?;
-    Ok(config)
-}
-
-fn init_logs(config: &VetisConfig) {
-    let mut log = logforth::starter_log::builder();
-    if let Some(server_log_config) = config
-        .server
-        .log()
-    {
-        log = log.dispatch(|d| {
-            server_log_config.into_builder("vetis", d)
-        });
-    }
-
-    for host_config in config.server.hosts().iter() {
-        if let Some(log_config) = host_config.log()  {
-            for bind_address in host_config.bind_addresses().iter() {
-                log = log.dispatch(|d| log_config.into_builder(&format!("{}:{}", host_config.hostname(), bind_address.1), d))
-            }
-        }
-    }
-
-    log.apply();
-}
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
     if let Some(config) = args.config {
@@ -224,7 +147,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Ok(file) = file {
                 let config = parse_file(&file);
                 if let Ok(config) = config {
-                    init_logs(&config);
+                    #[cfg(feature = "logging")]
+                    logs::init_logs(&config);
                     #[cfg(feature = "metrics")]
                     metrics::init_metrics();
 

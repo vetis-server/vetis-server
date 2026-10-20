@@ -1,5 +1,5 @@
 use opentelemetry::global;
 
-pub(crate) fn init_metrics() {
+pub(super) fn init_metrics() {
     let meter = global::meter("vetis");
 }
