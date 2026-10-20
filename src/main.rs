@@ -60,19 +60,19 @@ Options:
 )]
 struct Args {
     #[arg(
-        short, 
-        long, 
-        required = false, 
-        num_args = 0..=1, 
-        require_equals = true, 
+        short,
+        long,
+        required = false,
+        num_args = 0..=1,
+        require_equals = true,
         default_missing_value = "true", 
         help = "Start vetis as deamon"
     )]
     deamon: Option<bool>,
     #[arg(
-        short, 
-        long, 
-        required = false, 
+        short,
+        long,
+        required = false,
         help = "Config file to use"
     )]
     config: Option<String>,
@@ -126,12 +126,12 @@ async fn run(server_config: ServerConfig, deamon: Option<bool>) -> Result<(), Bo
     server
         .stop()
         .await?;
-    
+
     // Give 1 ms for cleanup
     tokio::time::sleep(Duration::from_millis(1)).await;
 
     info!(target: "vetis", "Server stopped successfully!");
-    
+
     Ok(())
 }
 
@@ -141,7 +141,7 @@ fn parse_file(file_contents: &str) -> Result<VetisConfig, Box<dyn std::error::Er
 
     let mut resolved_files = HashMap::new();
     let includes_regex = regex!(r"\$\(include_file\s*=\s*(.*)\)");
-    let mut matches = includes_regex.captures_iter(file_contents);    
+    let mut matches = includes_regex.captures_iter(file_contents);
     while let Some(matches) = matches.next(){
         let (full, [file_path]) = matches.extract();
         match read_to_string(file_path) {
@@ -159,7 +159,7 @@ fn parse_file(file_contents: &str) -> Result<VetisConfig, Box<dyn std::error::Er
 
     let mut resolved_vars = HashMap::new();
     let env_vars = regex!("\\$\\(([a-zA-Z_]*):{0,1}([\\\"\\\']{0,1}.*[\\\"\\\']{0,1})\\)");
-    let mut matches = env_vars.captures_iter(&file_contents);    
+    let mut matches = env_vars.captures_iter(&file_contents);
     while let Some(matches) = matches.next(){
         let (full, [name, default]) = matches.extract();
         let value = match std::env::var_os(name) {
@@ -177,9 +177,19 @@ fn parse_file(file_contents: &str) -> Result<VetisConfig, Box<dyn std::error::Er
         resolved_vars.get(&caps[0]).unwrap_or(&empty)
     });
 
-    #[cfg(feature = "yaml-config")]
+    #[cfg(all(feature = "yaml-config", feature = "toml-config"))]
+    let config = match serde_saphyr::from_str::<VetisConfig>(&file_contents) {
+        Ok(config) => config,
+        Err(yaml_error) => toml::from_str::<VetisConfig>(&file_contents).map_err(|toml_error| {
+            std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                format!("Could not parse config as YAML ({yaml_error}) or TOML ({toml_error})"),
+            )
+        })?,
+    };
+    #[cfg(all(feature = "yaml-config", not(feature = "toml-config")))]
     let config = serde_saphyr::from_str::<VetisConfig>(&file_contents)?;
-    #[cfg(feature = "toml-config")]
+    #[cfg(all(feature = "toml-config", not(feature = "yaml-config")))]
     let config = toml::from_str::<VetisConfig>(&file_contents)?;
     Ok(config)
 }
@@ -199,7 +209,7 @@ fn init_logs(config: &VetisConfig) {
         if let Some(log_config) = host_config.log()  {
             for bind_address in host_config.bind_addresses().iter() {
                 log = log.dispatch(|d| log_config.into_builder(&format!("{}:{}", host_config.hostname(), bind_address.1), d))
-            }                            
+            }
         }
     }
 
@@ -243,4 +253,126 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::{
+        fs,
+        path::PathBuf,
+        sync::atomic::{AtomicU64, Ordering},
+        time::SystemTime,
+    };
+
+    static NEXT_TEMP_FILE_ID: AtomicU64 = AtomicU64::new(0);
+
+    fn config_with_worker_threads(value: &str) -> String {
+        #[cfg(feature = "yaml-config")]
+        return format!("worker_threads: {value}\nmax_blocking_threads: 4\nserver: {{}}\n");
+
+        #[cfg(all(feature = "toml-config", not(feature = "yaml-config")))]
+        return format!("worker_threads = {value}\nmax_blocking_threads = 4\n[server]\n");
+    }
+
+    #[cfg(feature = "toml-config")]
+    fn toml_config_with_worker_threads(value: &str) -> String {
+        format!("worker_threads = {value}\nmax_blocking_threads = 4\n[server]\n")
+    }
+
+    fn temp_file(contents: &str) -> PathBuf {
+        let id = NEXT_TEMP_FILE_ID.fetch_add(1, Ordering::Relaxed);
+        let timestamp = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .expect("system clock must be after the Unix epoch")
+            .as_nanos();
+        let path = std::env::temp_dir()
+            .join(format!("vetis-server-test-{}-{timestamp}-{id}.conf", std::process::id()));
+        fs::write(&path, contents).expect("temporary config file should be writable");
+        path
+    }
+
+    struct TempFile(PathBuf);
+
+    impl Drop for TempFile {
+        fn drop(&mut self) {
+            let _ = fs::remove_file(&self.0);
+        }
+    }
+
+    #[cfg(feature = "yaml-config")]
+    #[test]
+    fn parses_yaml_server_configuration() {
+        let config = parse_file(&config_with_worker_threads("8")).unwrap();
+
+        assert_eq!(config.worker_threads, 8);
+        assert_eq!(config.max_blocking_threads, 4);
+        assert_eq!(
+            config
+                .server
+                .workers(),
+            1
+        );
+    }
+
+    #[cfg(feature = "toml-config")]
+    #[test]
+    fn parses_toml_server_configuration() {
+        let config = parse_file(&toml_config_with_worker_threads("8")).unwrap();
+
+        assert_eq!(config.worker_threads, 8);
+        assert_eq!(config.max_blocking_threads, 4);
+        assert_eq!(
+            config
+                .server
+                .workers(),
+            1
+        );
+    }
+
+    #[cfg(any(feature = "yaml-config", feature = "toml-config"))]
+    #[test]
+    fn uses_default_for_missing_environment_variable() {
+        let name = "VETIS_TEST_DEFAULT_WORKER_THREADS";
+        assert!(std::env::var_os(name).is_none());
+        let config = parse_file(&config_with_worker_threads(&format!("$({name}:8)"))).unwrap();
+
+        assert_eq!(config.worker_threads, 8);
+    }
+
+    #[cfg(any(feature = "yaml-config", feature = "toml-config"))]
+    #[test]
+    fn includes_file_contents() {
+        let included = TempFile(temp_file("8"));
+        let config = parse_file(&config_with_worker_threads(&format!(
+            "$(include_file = {})",
+            included.0.display()
+        )))
+        .unwrap();
+
+        assert_eq!(config.worker_threads, 8);
+    }
+
+    #[cfg(any(feature = "yaml-config", feature = "toml-config"))]
+    #[test]
+    fn rejects_invalid_configuration() {
+        assert!(parse_file("not a server configuration").is_err());
+    }
+
+    #[test]
+    fn parses_cli_options() {
+        let args = Args::try_parse_from(["vetis-server", "--config", "vetis.yaml"]).unwrap();
+        assert_eq!(
+            args.config
+                .as_deref(),
+            Some("vetis.yaml")
+        );
+        assert_eq!(args.deamon, None);
+
+        let args = Args::try_parse_from(["vetis-server", "--deamon"]).unwrap();
+        assert_eq!(args.deamon, Some(true));
+
+        let args = Args::try_parse_from(["vetis-server", "--deamon=false"]).unwrap();
+        assert_eq!(args.deamon, Some(false));
+    }
 }
