@@ -87,16 +87,6 @@ struct StartCommand {
 #[derive(Debug, Args)]
 struct FrontCommand {
     #[arg(
-        short,
-        long,
-        required = false,
-        num_args = 0..=1,
-        require_equals = true,
-        default_missing_value = "true", 
-        help = "Start vetis as deamon"
-    )]
-    deamon: bool,
-    #[arg(
         short, 
         long, 
         required = false, 
