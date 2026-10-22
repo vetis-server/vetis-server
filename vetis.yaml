@@ -27,7 +27,7 @@ server:
       status_pages:
         404: "404.html"
       paths:
-        - type: "static_path"
+        - type: "static"
           uri: "/"
           directory: "html"
           extensions: "\\.(html|ico|css)$"
@@ -38,11 +38,13 @@ server:
             capacity: 1000
           index_files:
             - "index.html"
-        - type: "flash_path"
+        - type: "flash"
           uri: "/vetis"
           response: "Hello from VeTiS!"
+          enable_cache: true
           status_code: 200
-        - type: "flash_path"
+        - type: "flash"
           uri: "/vetis/rio"
           response: "Fala galera!"
+          enable_cache: true
           status_code: 200
