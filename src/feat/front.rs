@@ -5,13 +5,21 @@ use std::{
 };
 
 use log::{error, info};
-use vetis::VetisServer as _;
+use vetis::{VetisServer as _, log::LogConfig};
+use vetis_log::StdoutLogConfig;
 use vetis_static::{StaticPathConfig, tokio::StaticPath};
 use vetis_tokio::{HostConfig, Vetis, host::Host};
 
-use crate::{FrontCommand, run_in_background, run_in_foreground};
+use crate::{FrontCommand, run_in_foreground};
 
 pub async fn init_server(root: &str, port: u16) -> Result<Vetis, Box<dyn Error>> {
+    let log_config = StdoutLogConfig::builder()
+        .log_level(log::Level::Info)
+        .build();
+    logforth::starter_log::builder()
+        .dispatch(|d| log_config.into_builder("vetis", d))
+        .apply();
+
     let host_config = HostConfig::builder()
         .hostname("localhost")
         .bind_addresses(&[(IpAddr::V4(Ipv4Addr::UNSPECIFIED), port)])
@@ -41,11 +49,7 @@ pub async fn run(cmd: FrontCommand) -> Result<(), Box<dyn Error>> {
         error!(target: "vetis", "Failed to start server: {}", e);
     }
 
-    if cmd.deamon {
-        run_in_background().await?;
-    } else {
-        run_in_foreground().await?
-    }
+    run_in_foreground().await?;
 
     println!("");
     info!(target: "vetis", "Stopping server...");
