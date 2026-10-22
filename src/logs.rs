@@ -1,4 +1,4 @@
-use crate::VetisConfig;
+use crate::feat::server::VetisConfig;
 
 pub(super) fn init_logs(config: &VetisConfig) {
     let mut log = logforth::starter_log::builder();

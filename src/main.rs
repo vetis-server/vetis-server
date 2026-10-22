@@ -1,44 +1,29 @@
-use clap::Parser;
-use log::{error, info};
-use serde::Deserialize;
-use std::{error::Error, fs::read_to_string, path::Path, time::Duration};
+#[cfg(target_family = "unix")]
+use std::error::Error;
+
+use clap::{Args, Parser, Subcommand};
 #[cfg(target_family = "unix")]
 use tokio::signal::unix::{SignalKind, signal};
 #[cfg(target_family = "windows")]
 use tokio::signal::windows::{ctrl_c, ctrl_shutdown};
-use vetis::{VetisServer as _, server::ServerConfig};
-use vetis_tokio::Vetis;
-
-#[cfg(feature = "logging")]
-#[allow(unused_imports)]
-use vetis_log::StderrLogConfig;
-
 #[cfg(feature = "flash")]
 #[allow(unused_imports)]
 use vetis_flash::FlashPathConfig;
-
+#[cfg(feature = "logging")]
+#[allow(unused_imports)]
+use vetis_log::StderrLogConfig;
 #[cfg(feature = "proxy")]
 #[allow(unused_imports)]
 use vetis_proxy::ProxyPathConfig;
-
 #[cfg(feature = "rev-proxy")]
 #[allow(unused_imports)]
 use vetis_rev_proxy::ReverseProxyPathConfig;
-
 #[cfg(feature = "static")]
 #[allow(unused_imports)]
 use vetis_static::StaticPathConfig;
 
-use crate::config::parse_file;
-
-#[derive(Deserialize)]
-pub struct VetisConfig {
-    worker_threads: usize,
-    max_blocking_threads: usize,
-    server: ServerConfig,
-}
-
 mod config;
+mod feat;
 #[cfg(feature = "logging")]
 mod logs;
 #[cfg(feature = "metrics")]
@@ -52,17 +37,37 @@ mod metrics;
 vetis - a very tiny server
 
 Usage:
-    vetis-server [OPTIONS]
+    vetis-server [COMMAND] [OPTIONS]
 
 Options:
     -h, --help       Print help information
     -V, --version    Print version information
-    -d, --deamon     Start vetis as deamon 
-    -c, --config     <CONFIG>
-                     Config file to use
+
+Below you have a list of commands you can use for different purposes:
+
+To start server from a config file
+    start
+    stop
+
+For static file serving
+    front
+
 "#
 )]
-struct Args {
+struct Cli {
+    #[command(subcommand)]
+    commands: Commands,
+}
+
+#[derive(Debug, Subcommand)]
+enum Commands {
+    Start(StartCommand),
+    Stop,
+    Front(FrontCommand),
+}
+
+#[derive(Debug, Args)]
+struct StartCommand {
     #[arg(
         short,
         long,
@@ -72,108 +77,102 @@ struct Args {
         default_missing_value = "true", 
         help = "Start vetis as deamon"
     )]
-    deamon: Option<bool>,
+    deamon: bool,
     #[arg(
-        short,
-        long,
-        required = false,
+        short, 
+        long, 
+        required = false, 
         help = "Config file to use"
     )]
     config: Option<String>,
 }
+#[derive(Debug, Args)]
+struct FrontCommand {
+    #[arg(
+        short,
+        long,
+        required = false,
+        num_args = 0..=1,
+        require_equals = true,
+        default_missing_value = "true", 
+        help = "Start vetis as deamon"
+    )]
+    deamon: bool,
+    #[arg(
+        short, 
+        long, 
+        required = false, 
+        num_args = 0..=1,
+        require_equals = true,
+        default_value = ".",
+        default_missing_value = ".", 
+        help = "Root directory to serve."
+    )]
+    root: String,
+    #[arg(
+        short, 
+        long, 
+        required = false, 
+        num_args = 0..=1,
+        require_equals = true,
+        default_value = "0.0.0.0",
+        default_missing_value = "0.0.0.0", 
+        help = "Interface to bind to."
+    )]
+    interface: String,
+    #[arg(
+        short, 
+        long, 
+        required = false, 
+        num_args = 0..=1,
+        require_equals = true,
+        default_value = "4444",
+        default_missing_value = "4444", 
+        help = "Port to bind to."
+    )]
+    port: u16,
+}
 
 #[cfg(target_family = "unix")]
-async fn run_in_background() -> Result<(), Box<dyn Error>> {
+pub(crate) async fn run_in_background() -> Result<(), Box<dyn Error>> {
     let mut signal = signal(SignalKind::terminate())?;
     signal.recv().await;
     Ok(())
 }
 
 #[cfg(target_family = "windows")]
-async fn run_in_background() -> Result<(), Box<dyn Error>> {
+pub(crate) async fn run_in_background() -> Result<(), Box<dyn Error>> {
     let mut signal = ctrl_shutdown()?;
     signal.recv().await;
     Ok(())
 }
 
 #[cfg(target_family = "unix")]
-async fn run_in_foreground() -> Result<(), Box<dyn Error>> {
+pub(crate) async fn run_in_foreground() -> Result<(), Box<dyn Error>> {
     let mut signal = signal(SignalKind::interrupt())?;
     signal.recv().await;
     Ok(())
 }
 
 #[cfg(target_family = "windows")]
-async fn run_in_foreground() -> Result<(), Box<dyn Error>> {
+pub(crate) async fn run_in_foreground() -> Result<(), Box<dyn Error>> {
     let mut signal = ctrl_c()?;
     signal.recv().await;
     Ok(())
 }
 
-async fn run(server_config: ServerConfig, deamon: Option<bool>) -> Result<(), Box<dyn Error>> {
-    let mut server = Vetis::from_config(server_config).await?;
-    if let Err(e) = server.run().await {
-        error!(target: "vetis", "Failed to start server: {}", e);
-    }
-
-    if let Some(is_deamon) = deamon
-        && is_deamon
-    {
-        run_in_background().await?;
-    } else {
-        run_in_foreground().await?
-    }
-
-    println!("");
-    info!(target: "vetis", "Stopping server...");
-
-    server
-        .stop()
-        .await?;
-
-    // Give 1 ms for cleanup
-    tokio::time::sleep(Duration::from_millis(1)).await;
-
-    info!(target: "vetis", "Server stopped successfully!");
-
-    Ok(())
-}
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Args::parse();
-    if let Some(config) = args.config {
-        if Path::exists(Path::new(&config)) {
-            let file = read_to_string(&config);
-            if let Ok(file) = file {
-                let config = parse_file(&file);
-                if let Ok(config) = config {
-                    #[cfg(feature = "logging")]
-                    logs::init_logs(&config);
-                    #[cfg(feature = "metrics")]
-                    metrics::init_metrics();
-
-                    let rt = tokio::runtime::Builder::new_multi_thread()
-                        .enable_all()
-                        .worker_threads(config.worker_threads)
-                        .max_blocking_threads(config.max_blocking_threads)
-                        .build()?;
-                    rt.block_on(async { run(config.server, args.deamon).await })?;
-                } else {
-                    eprintln!(
-                        "Failed to start server: {}",
-                        config
-                            .err()
-                            .unwrap()
-                    );
-                }
-            } else {
-                eprintln!("Failed to start server: {}", config);
-            }
-        } else {
-            eprintln!("Failed to start server: Config file does not exist: {}", config);
+    let args = Cli::parse();
+    match args.commands {
+        Commands::Start(cmd) => {
+            feat::server::start(cmd)?;
         }
-    } else {
-        eprintln!("Failed to start server: No config file specified");
+        Commands::Stop => {
+            feat::server::stop()?;
+        }
+        Commands::Front(cmd) => {
+            feat::front::serve(cmd)?;
+        }
     }
 
     Ok(())
@@ -181,7 +180,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::config::parse_file;
     use std::{
         fs,
         path::PathBuf,
@@ -281,22 +280,5 @@ mod tests {
     #[test]
     fn rejects_invalid_configuration() {
         assert!(parse_file("not a server configuration").is_err());
-    }
-
-    #[test]
-    fn parses_cli_options() {
-        let args = Args::try_parse_from(["vetis-server", "--config", "vetis.yaml"]).unwrap();
-        assert_eq!(
-            args.config
-                .as_deref(),
-            Some("vetis.yaml")
-        );
-        assert_eq!(args.deamon, None);
-
-        let args = Args::try_parse_from(["vetis-server", "--deamon"]).unwrap();
-        assert_eq!(args.deamon, Some(true));
-
-        let args = Args::try_parse_from(["vetis-server", "--deamon=false"]).unwrap();
-        assert_eq!(args.deamon, Some(false));
     }
 }
