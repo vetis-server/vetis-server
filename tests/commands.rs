@@ -5,7 +5,8 @@ use predicates::str::contains;
 fn missing_config_reports_error() {
     #[allow(deprecated)]
     let mut cmd = Command::cargo_bin("vetis-server").unwrap();
-    cmd.assert()
+    cmd.arg("start")
+        .assert()
         .success()
         .stderr(contains("Failed to start server: No config file specified"));
 }
@@ -14,7 +15,7 @@ fn missing_config_reports_error() {
 fn missing_config_file_reports_error() {
     #[allow(deprecated)]
     let mut cmd = Command::cargo_bin("vetis-server").unwrap();
-    cmd.args(["--config", "missing-vetis-test-config.yaml"])
+    cmd.args(["start", "--config", "missing-vetis-test-config.yaml"])
         .assert()
         .success()
         .stderr(contains(
