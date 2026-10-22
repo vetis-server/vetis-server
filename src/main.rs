@@ -1,7 +1,5 @@
-#[cfg(target_family = "unix")]
-use std::error::Error;
-
 use clap::{Args, Parser, Subcommand};
+use std::error::Error;
 #[cfg(target_family = "unix")]
 use tokio::signal::unix::{SignalKind, signal};
 #[cfg(target_family = "windows")]
