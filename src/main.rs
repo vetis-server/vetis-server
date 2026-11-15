@@ -6,19 +6,19 @@ use tokio::signal::unix::{SignalKind, signal};
 use tokio::signal::windows::{ctrl_c, ctrl_shutdown};
 #[cfg(feature = "flash")]
 #[allow(unused_imports)]
-use vetis_flash::FlashPathConfig;
+use vetis_flash::FlashHookConfig;
 #[cfg(feature = "logging")]
 #[allow(unused_imports)]
 use vetis_log::StderrLogConfig;
 #[cfg(feature = "proxy")]
 #[allow(unused_imports)]
-use vetis_proxy::ProxyPathConfig;
+use vetis_proxy::ProxyHookConfig;
 #[cfg(feature = "rev-proxy")]
 #[allow(unused_imports)]
-use vetis_rev_proxy::ReverseProxyPathConfig;
+use vetis_rev_proxy::ReverseProxyHookConfig;
 #[cfg(feature = "static")]
 #[allow(unused_imports)]
-use vetis_static::StaticPathConfig;
+use vetis_static::StaticHookConfig;
 
 mod config;
 mod feat;

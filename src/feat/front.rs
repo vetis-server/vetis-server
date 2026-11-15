@@ -5,10 +5,10 @@ use std::{
 };
 
 use log::{error, info};
-use vetis::{VetisServer as _, log::LogConfig};
+use vetis::{VetisServer as _, host::HostConfig, log::LogConfig};
 use vetis_log::StdoutLogConfig;
-use vetis_static::{StaticPathConfig, tokio::StaticPath};
-use vetis_tokio::{HostConfig, Vetis, host::Host};
+use vetis_static::{StaticHookConfig, tokio::StaticHook};
+use vetis_tokio::{Vetis, host::Host};
 
 use crate::{FrontCommand, run_in_foreground};
 
@@ -27,9 +27,8 @@ pub async fn init_server(root: &str, port: u16) -> Result<Vetis, Box<dyn Error>>
         .build()?;
 
     let mut virtual_host = Host::new(host_config).await?;
-    virtual_host.add_path(StaticPath::new(
-        StaticPathConfig::builder()
-            .uri("/")
+    virtual_host.add_hook(StaticHook::new(
+        StaticHookConfig::builder()
             .directory(root)
             .extensions("\\.(html|js|css|svg|png|ico|jsx|ts|tsx|json|mjs)$")
             .index_files(vec!["index.html".into()])

@@ -105,12 +105,12 @@
                     -->
                     <!--
                     <Component Id='License' Guid='*'>
-                        <File Id='LicenseFile' Name='ChangeMe' DiskId='1' Source='C:\Path\To\File' KeyPath='yes'/>
+                        <File Id='LicenseFile' Name='ChangeMe' DiskId='1' Source='C:\Hook\To\File' KeyHook='yes'/>
                     </Component>
                     -->
 
                     <Directory Id='Bin' Name='bin'>
-                        <Component Id='Path' Guid='B9DD4049-AB78-4A22-9F1B-1567DB281490' KeyPath='yes'>
+                        <Component Id='Hook' Guid='B9DD4049-AB78-4A22-9F1B-1567DB281490' KeyHook='yes'>
                             <Environment
                                 Id='PATH'
                                 Name='PATH'
@@ -126,7 +126,7 @@
                                 Name='vetis-server.exe'
                                 DiskId='1'
                                 Source='$(var.CargoTargetBinDir)\vetis-server.exe'
-                                KeyPath='yes'/>
+                                KeyHook='yes'/>
                         </Component>
                     </Directory>
                 </Directory>
@@ -157,7 +157,7 @@
                 Description='Add the install location of the [ProductName] executable to the PATH system environment variable. This allows the [ProductName] executable to be called from any location.'
                 Level='1'
                 Absent='allow'>
-                <ComponentRef Id='Path'/>
+                <ComponentRef Id='Hook'/>
             </Feature>
         </Feature>
 
@@ -183,7 +183,7 @@
 
                 1. Comment out or remove the two `Publish` tags that follow the
                    `WixVariable` tag.
-                2. Uncomment the `<WixVariable Id='WixUILicenseRtf' Value='Path\to\Eula.rft'>` tag further down
+                2. Uncomment the `<WixVariable Id='WixUILicenseRtf' Value='Hook\to\Eula.rft'>` tag further down
                 3. Replace the `Value` attribute of the `WixVariable` tag with
                    the path to a RTF file that will be used as the EULA and
                    displayed in the license agreement dialog.
@@ -199,7 +199,7 @@
           the following `WixUILicenseRTF` tag and changing the `Value`
           attribute.
         -->
-        <!-- <WixVariable Id='WixUILicenseRtf' Value='Relative\Path\to\Eula.rtf'/> -->
+        <!-- <WixVariable Id='WixUILicenseRtf' Value='Relative\Hook\to\Eula.rtf'/> -->
 
         
         <!--

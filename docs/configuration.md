@@ -91,7 +91,7 @@ error_pages:
 - **Key**: HTTP status code (404, 500, 403, etc.)
 - **Value**: File name relative to the virtual host root directory
 
-#### Static Paths Configuration
+#### Static Hooks Configuration
 
 Defines URL patterns for serving static files:
 

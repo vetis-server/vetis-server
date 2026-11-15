@@ -1,8 +1,7 @@
-use regex::{Captures, regex};
-use std::{collections::HashMap, fs::read_to_string};
-
 #[cfg(all(feature = "yaml-config", not(feature = "toml-config")))]
 use crate::feat::server::VetisConfig;
+use regex::{Captures, regex};
+use std::{collections::HashMap, fs::read_to_string};
 
 pub(super) fn parse_file(file_contents: &str) -> Result<VetisConfig, Box<dyn std::error::Error>> {
     let empty = String::default();
