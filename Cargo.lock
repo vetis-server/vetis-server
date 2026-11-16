@@ -3007,12 +3007,9 @@ version = "0.1.2-beta.1"
 dependencies = [
  "cel",
  "compact_str",
- "deboa",
- "deboa-tokio",
  "serde",
  "typetag",
  "vetis",
- "vetis-tokio",
 ]
 
 [[package]]
@@ -3023,7 +3020,7 @@ dependencies = [
  "deboa",
  "deboa-tokio",
  "http",
- "http-body-util",
+ "hyper-body-utils",
  "once_cell",
  "serde",
  "typetag",
