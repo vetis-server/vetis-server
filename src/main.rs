@@ -72,50 +72,45 @@ struct StartCommand {
         required = false,
         num_args = 0..=1,
         require_equals = true,
-        default_missing_value = "true", 
+        default_missing_value = "true",
         help = "Start vetis as deamon"
     )]
     deamon: bool,
-    #[arg(
-        short, 
-        long, 
-        required = false, 
-        help = "Config file to use"
-    )]
+    #[arg(short, long, required = false, help = "Config file to use")]
     config: Option<String>,
 }
 #[derive(Debug, Args)]
 struct FrontCommand {
     #[arg(
-        short, 
-        long, 
-        required = false, 
+        short,
+        long,
+        required = false,
         num_args = 0..=1,
         require_equals = true,
         default_value = ".",
-        default_missing_value = ".", 
+        default_missing_value = ".",
         help = "Root directory to serve."
     )]
     root: String,
     #[arg(
-        short, 
-        long, 
-        required = false, 
+        short,
+        long,
+        required = false,
         num_args = 0..=1,
         require_equals = true,
         default_value = "0.0.0.0",
-        default_missing_value = "0.0.0.0", 
+        default_missing_value = "0.0.0.0",
         help = "Interface to bind to."
     )]
     interface: String,
     #[arg(
-        short, 
-        long, 
-        required = false, 
+        short,
+        long,
+        required = false,
         num_args = 0..=1,
         require_equals = true,
         default_value = "4444",
-        default_missing_value = "4444", 
+        default_missing_value = "4444",
         help = "Port to bind to."
     )]
     port: u16,

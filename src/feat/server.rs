@@ -17,7 +17,7 @@ pub struct VetisConfig {
 
 async fn run(server_config: ServerConfig, deamon: bool) -> Result<(), Box<dyn Error>> {
     let mut server = Vetis::from_config(server_config).await?;
-    if let Err(e) = server.run().await {
+    if let Err(e) = server.start().await {
         error!(target: "vetis", "Failed to start server: {}", e);
     }
 

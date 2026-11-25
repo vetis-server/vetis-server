@@ -1,14 +1,10 @@
-use std::{
-    error::Error,
-    net::{IpAddr, Ipv4Addr},
-    time::Duration,
-};
+use std::{error::Error, net::Ipv4Addr, time::Duration};
 
 use log::{error, info};
 use vetis::{VetisServer as _, host::HostConfig, log::LogConfig};
 use vetis_log::StdoutLogConfig;
-use vetis_static::{StaticHookConfig, tokio::StaticHook};
-use vetis_tokio::{Vetis, host::Host};
+use vetis_static::StaticHookConfig;
+use vetis_tokio::Vetis;
 
 use crate::{FrontCommand, run_in_foreground};
 
@@ -22,29 +18,26 @@ pub async fn init_server(root: &str, port: u16) -> Result<Vetis, Box<dyn Error>>
 
     let host_config = HostConfig::builder()
         .hostname("localhost")
-        .bind_addresses(&[(IpAddr::V4(Ipv4Addr::UNSPECIFIED), port)])
         .root_directory(root)
+        .add_bind_address(Ipv4Addr::UNSPECIFIED, port)
+        .add_hook(
+            StaticHookConfig::builder()
+                .directory(root)
+                .extensions("\\.(html|js|css|svg|png|ico|jsx|ts|tsx|json|mjs)$")
+                .index_files(vec!["index.html".into()])
+                .build()?,
+        )
         .build()?;
 
-    let mut virtual_host = Host::new(host_config).await?;
-    virtual_host.add_hook(StaticHook::new(
-        StaticHookConfig::builder()
-            .directory(root)
-            .extensions("\\.(html|js|css|svg|png|ico|jsx|ts|tsx|json|mjs)$")
-            .index_files(vec!["index.html".into()])
-            .build()?,
-    ));
-
     let server = Vetis::builder()
-        .add_host(virtual_host)
-        .await?
+        .add_host(host_config)
         .build();
     Ok(server)
 }
 
 pub async fn run(cmd: FrontCommand) -> Result<(), Box<dyn Error>> {
     let mut server = init_server(&cmd.root, cmd.port).await?;
-    if let Err(e) = server.run().await {
+    if let Err(e) = server.start().await {
         error!(target: "vetis", "Failed to start server: {}", e);
     }
 

@@ -26,9 +26,28 @@ server:
         #  - "h2"
       status_pages:
         404: "404.html"
-      paths:
-        - type: "static"
-          uri: "/"
+      hooks:
+        - name: "flash"
+          matcher:
+            type: "path"
+            paths:
+              - "/vetis/rio*"
+          response: "Fala galera!"
+          enable_cache: true
+          status_code: 200
+        - name: "flash"
+          matcher:
+            type: "path"
+            paths:
+              - "/vetis*"
+          response: "Hello from VeTiS!"
+          enable_cache: true
+          status_code: 200
+        - name: "static"
+          matcher:
+            type: "path"
+            paths:
+              - "/*"
           directory: "html"
           extensions: "\\.(html|ico|css)$"
           cache:
@@ -38,13 +57,3 @@ server:
             capacity: 1000
           index_files:
             - "index.html"
-        - type: "flash"
-          uri: "/vetis"
-          response: "Hello from VeTiS!"
-          enable_cache: true
-          status_code: 200
-        - type: "flash"
-          uri: "/vetis/rio"
-          response: "Fala galera!"
-          enable_cache: true
-          status_code: 200
